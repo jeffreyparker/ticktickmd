@@ -2,6 +2,8 @@
 
 A Python tool to convert TickTick CSV backup exports into structured markdown files, preserving your tasks, notes, and checklists in a format compatible with popular note-taking apps like Obsidian, Logseq, and Notion.
 
+(Note, this was coded primarily with Claude Code. It's working fine for my needs, but there may be rough edges.)
+
 ## Features
 
 - **Hierarchical Structure**: Organizes tasks as `Folder/List/Task.md`
@@ -13,28 +15,10 @@ A Python tool to convert TickTick CSV backup exports into structured markdown fi
 
 ## Requirements
 
-- Python 3.9 or higher
 - [uv](https://github.com/astral-sh/uv) (recommended) or standard Python
 
 No external dependencies required - uses only Python standard library.
 
-## Installation
-
-### Quick Start (Recommended)
-
-If you have [uv](https://github.com/astral-sh/uv) installed, you can run this tool directly without installation:
-
-```bash
-uvx ticktickmd backup.csv -o output/
-```
-
-This will automatically download and run the latest version.
-
-### Manual Installation
-
-1. Clone or download this repository
-2. Ensure you have Python 3.9+ installed
-3. (Optional) Install with pip: `pip install -e .`
 
 ## Usage
 
@@ -44,6 +28,16 @@ This will automatically download and run the latest version.
 2. Go to Settings → Backup
 3. Click "Export data as CSV"
 4. Save the CSV file
+
+### Quick Start (Recommended)
+
+If you have [uv](https://github.com/astral-sh/uv) installed, you can run this tool directly without installation:
+
+```bash
+uvx git+https://github.com/jeffreyparker/ticktickmd backup.csv -o output/
+```
+
+This will automatically download and run the latest version.
 
 ### Basic Conversion
 
@@ -196,13 +190,6 @@ Compatible with standard markdown. For best results:
 - Logseq prefers `TODO` / `DONE` keywords
 - May need to convert `- [ ]` checkboxes manually or with a script
 
-### Notion
-
-Can import the markdown files:
-- Frontmatter may not be fully preserved
-- Checkboxes work as expected
-- Hierarchy is maintained
-
 ### Other Apps
 
 The standard markdown format should work with most apps that support:
@@ -217,35 +204,3 @@ The standard markdown format should work with most apps that support:
 1. **Use hierarchical structure** (default) for best organization
 2. **Generate index files** (default) for easy navigation with wikilinks
 3. **Include archived tasks** if you want a complete backup
-
-### Migration Workflow
-
-1. Export CSV from TickTick
-2. Convert to markdown with this tool
-3. Import into your target app
-4. Manually download any critical attachments from TickTick
-5. Cross-reference against the TickTick app to verify nothing was missed
-
-### Automation
-
-Add to a backup script:
-
-```bash
-#!/bin/bash
-# Download latest TickTick backup (manual step)
-# Then run:
-uvx ticktickmd ~/Downloads/TickTick-backup-*.csv -o ~/Notes/TickTick-Archive/ --include-archived
-```
-
-## Contributing
-
-Suggestions and improvements welcome! Key areas for enhancement:
-
-- API integration for attachment download
-- Alternative output formats (Logseq, Joplin, etc.)
-- Better handling of complex content formatting
-- Template customization options
-
-## License
-
-Free to use and modify for personal use.
