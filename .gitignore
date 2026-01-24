@@ -1,0 +1,32 @@
+# Claude Code directory
+.claude/
+
+# CSV backup files
+*.csv
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+
+# Output directories (will contain generated markdown)
+output/
+output_*/
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+.eggs/
+
+# UV
+uv.lock
