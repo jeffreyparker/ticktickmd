@@ -1,11 +1,15 @@
 # TickTick to Markdown Converter
 
-A Python tool to convert TickTick CSV backup exports into structured markdown files, preserving your tasks, notes, and checklists in a format compatible with popular note-taking apps like Obsidian, Logseq, and Notion.
+A Python tool to convert TickTick tasks into structured markdown files, preserving your tasks, notes, and checklists in a format compatible with popular note-taking apps like Obsidian, Logseq, and Notion.
+
+Supports both **CSV backup exports** and the **TickTick Open API** for pulling tasks directly.
 
 (Note, this was coded primarily with Claude Code. It's working fine for my needs, but there may be rough edges.)
 
 ## Features
 
+- **CSV Import**: Convert TickTick CSV backup exports
+- **API Import**: Pull tasks directly from TickTick via the Open API
 - **Hierarchical Structure**: Organizes tasks as `Folder/List/Task.md`
 - **YAML Frontmatter**: Preserves all metadata (dates, priority, status, tags)
 - **Checklist Support**: Converts TickTick checkbox format to standard markdown `- [ ]` / `- [x]`
@@ -17,42 +21,82 @@ A Python tool to convert TickTick CSV backup exports into structured markdown fi
 
 - [uv](https://github.com/astral-sh/uv) (recommended) or standard Python
 
-No external dependencies required - uses only Python standard library.
-
-
 ## Usage
 
-### Exporting from TickTick
+The tool has two modes: **csv** for importing from backup files, and **api** for pulling directly from TickTick.
+
+### From CSV Backup
+
+#### Exporting from TickTick
 
 1. Open TickTick on web or desktop
 2. Go to Settings → Backup
 3. Click "Export data as CSV"
 4. Save the CSV file
 
-### Quick Start (Recommended)
-
-If you have [uv](https://github.com/astral-sh/uv) installed, you can run this tool directly without installation:
-
-```bash
-uvx git+https://github.com/jeffreyparker/ticktickmd backup.csv -o output/
-```
-
-This will automatically download and run the latest version.
-
-### Basic Conversion
+#### Converting
 
 ```bash
 # Using uvx (recommended - no installation needed)
-uvx ticktickmd backup.csv -o output/
+uvx ticktickmd csv backup.csv -o output/
 
 # Or if installed locally
-ticktickmd backup.csv -o output/
+ticktickmd csv backup.csv -o output/
+```
 
-# Or using uv run from the repository
-uv run ticktickmd backup.csv -o output/
+### From TickTick API
 
-# Or using standard Python from the repository
-python -m ticktickmd.cli backup.csv -o output/
+#### Setup
+
+1. Create a TickTick API app at https://developer.ticktick.com/manage
+2. Set the OAuth redirect URL to `http://localhost:8090/callback`
+3. Run the auth setup:
+
+```bash
+uvx ticktickmd auth login
+```
+
+This will prompt for your Client ID and Client Secret, then open a browser to authorize the app.
+
+#### Pulling Tasks
+
+```bash
+# Fetch all tasks
+uvx ticktickmd api -o output/
+
+# Fetch only a specific project
+uvx ticktickmd api -o output/ --project "Work"
+```
+
+#### Managing Auth
+
+```bash
+# Check auth status
+ticktickmd auth status
+
+# Log out (clear stored tokens)
+ticktickmd auth logout
+```
+
+### Output Options
+
+These options work with both `csv` and `api` commands:
+
+```bash
+# Include archived/completed tasks (excluded by default)
+uvx ticktickmd csv backup.csv -o output/ --include-archived
+
+# Flat structure (all files in one directory)
+uvx ticktickmd csv backup.csv -o output/ --flat
+
+# Single combined markdown file
+uvx ticktickmd csv backup.csv -o all_tasks.md --single-file
+
+# Don't generate list index files
+uvx ticktickmd csv backup.csv -o output/ --no-index
+
+# Verbose output
+uvx ticktickmd csv backup.csv -o output/ -v
 ```
 
 This creates a hierarchical directory structure:
@@ -68,25 +112,6 @@ output/
 │       └── ...
 └── Personal/
     └── ...
-```
-
-### Command Line Options
-
-```bash
-# Include archived/completed tasks (excluded by default)
-uvx ticktickmd backup.csv -o output/ --include-archived
-
-# Flat structure (all files in one directory)
-uvx ticktickmd backup.csv -o output/ --flat
-
-# Single combined markdown file
-uvx ticktickmd backup.csv -o all_tasks.md --single-file
-
-# Don't generate list index files
-uvx ticktickmd backup.csv -o output/ --no-index
-
-# Verbose output
-uvx ticktickmd backup.csv -o output/ -v
 ```
 
 ## Output Format
